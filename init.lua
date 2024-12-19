@@ -43,7 +43,7 @@ vim.cmd('NvimTreeToggle')
 vim.cmd 'vertical resize -8'
 vim.defer_fn(function()
   vim.cmd 'wincmd l'
-end, 2)
+end, 4)
 
 vim.api.nvim_create_autocmd("WinEnter", {
     callback = function()
@@ -59,3 +59,5 @@ vim.api.nvim_create_autocmd("WinEnter", {
     desc = "Close NvimTree if it's the only window open",
 })
 
+vim.cmd("set shiftwidth=4")
+vim.cmd("set tabstop=4")
