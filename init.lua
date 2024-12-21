@@ -2,6 +2,61 @@ vim.o.shell = "powershell.exe"
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
 
+
+-- Function to format the current file with clang-format.cmd
+local function clang_format()
+  -- Get the current file path
+  local filepath = vim.fn.expand("%:p")
+
+  -- Ensure the file path is valid
+  if filepath == "" then
+    vim.api.nvim_err_writeln("No file to format!")
+    return
+  end
+
+  -- Build the clang-format command
+  local cmd = { "clang-format.cmd", filepath }
+
+  -- Run the command and replace the buffer contents
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stdout = function(_, data)
+      if data then
+        -- Replace the entire buffer with the formatted output
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, data)
+      end
+    end,
+    on_stderr = function(_, data)
+      if data then
+        -- Print errors if any
+        vim.api.nvim_err_writeln(table.concat(data, "\n"))
+      end
+    end,
+    on_exit = function(_, code)
+      if code == 0 then
+        vim.notify("Formatting complete!", vim.log.levels.INFO)
+      else
+        vim.api.nvim_err_writeln("clang-format.cmd failed with exit code " .. code)
+      end
+    end,
+  })
+end
+
+-- Autocmd to add :Format command for C and C++ files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "c", "cpp" },
+  callback = function()
+    vim.api.nvim_buf_create_user_command(0, "Format", clang_format, { desc = "Format the current file with clang-format.cmd" })
+  end,
+})
+
+
+
+
+
+
+
 -- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
