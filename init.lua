@@ -39,11 +39,23 @@ vim.schedule(function()
 end)
 
 vim.opt.shadafile = 'NONE'
+
 vim.cmd('NvimTreeToggle')
 vim.cmd 'vertical resize -8'
-vim.defer_fn(function()
-  vim.cmd 'wincmd l'
-end, 3)
+
+
+-- vim.defer_fn(function()
+--   vim.cmd 'wincmd l'
+-- end, 700)
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    vim.defer_fn(function()
+      vim.cmd 'wincmd l'
+    end, 1) -- Delay in milliseconds (e.g., 100ms)
+  end,
+})
+
 
 vim.api.nvim_create_autocmd("WinEnter", {
     callback = function()
