@@ -126,3 +126,6 @@ vim.api.nvim_create_autocmd("WinEnter", {
     desc = "Close NvimTree if it's the only window open",
 })
 
+vim.opt.shell = 'pwsh'
+vim.opt.shellcmdflag = '-nologo -noprofile -ExecutionPolicy RemoteSigned -command'
+vim.opt.shellxquote = ''
